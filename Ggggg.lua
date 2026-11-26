@@ -11212,8 +11212,8 @@ function Library:Notify(...)
         Data.DescriptionColor = Info.DescriptionColor
 
         Data.Time = Info.Time or 5
-        Data.SoundId = Info.SoundId
-        Data.Steps = Info.Steps
+        Data.SoundId = Info.SoundId or 137502807803779
+Data.Steps = Info.Steps
         Data.Persist = Info.Persist
 
         Data.Callback = typeof(Info.Callback) == "function" and Info.Callback or nil
