@@ -15942,93 +15942,10 @@ function Library:CreateWindow(WindowInfo)
         task.spawn(Library.Toggle)
     end
 
-        --// 小さめの開閉ボタン（常時表示） \\--
-    local ToggleBtn = New("TextButton", {
-        BackgroundColor3 = Color3.fromRGB(18, 18, 22),
-        Size = UDim2.fromOffset(38, 38),
-        Position = UDim2.fromOffset(12, 12),
-        Text = "",
-        AutoButtonColor = false,
-        ZIndex = 10,
-        Parent = Library.Floats or gethui(),
-    })
-    table.insert(Library.Corners, New("UICorner", {
-        CornerRadius = UDim.new(0, 10),          -- 角丸
-        Parent = ToggleBtn,
-    }))
-
-    -- 白い枠
-    local Stroke = New("UIStroke", {
-        Color = Color3.fromRGB(255, 255, 255),
-        Thickness = 1.4,
-        Transparency = 0.25,
-        Parent = ToggleBtn,
-    })
-
-    -- アイコン（開いてる時と閉じてる時で変化）
-    local IconLabel = New("TextLabel", {
-        BackgroundTransparency = 1,
-        Size = UDim2.fromScale(1, 1),
-        Text = "☰",                              -- 閉じている時
-        TextSize = 18,
-        TextColor3 = Color3.fromRGB(255, 255, 255),
-        Parent = ToggleBtn,
-    })
-
-    -- ホバー・クリック時のアニメーション
-    local function AnimateButton(hover)
-        local targetTransparency = hover and 0.05 or 0.25
-        local targetBg = hover and Color3.fromRGB(28, 28, 34) or Color3.fromRGB(18, 18, 22)
-
-        TweenService:Create(Stroke, Library.TweenInfo, {
-            Transparency = targetTransparency
-        }):Play()
-        TweenService:Create(ToggleBtn, Library.TweenInfo, {
-            BackgroundColor3 = targetBg
-        }):Play()
-    end
-
-    ToggleBtn.MouseEnter:Connect(function()
-        AnimateButton(true)
-    end)
-    ToggleBtn.MouseLeave:Connect(function()
-        AnimateButton(false)
-    end)
-
-    -- クリックで開閉 + アニメーション
-    ToggleBtn.MouseButton1Click:Connect(function()
-        -- 押した感のアニメーション
-        local scale = New("UIScale", { Scale = 1, Parent = ToggleBtn })
-        TweenService:Create(scale, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            Scale = 0.88
-        }):Play()
-        task.wait(0.08)
-        TweenService:Create(scale, TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            Scale = 1
-        }):Play()
-        task.delay(0.2, function()
-            if scale and scale.Parent then
-                scale:Destroy()
-            end
-        end)
-
-        Library:Toggle()
-
-        -- アイコンを切り替え
-        if Library.Toggled then
-            IconLabel.Text = "✕"          -- 開いている時
-        else
-            IconLabel.Text = "☰"          -- 閉じている時
-        end
-    end)
-
-    -- ドラッグ可能にする
-    Library:MakeDraggable(ToggleBtn, ToggleBtn, true)
-
-    -- 初期状態のアイコン設定
-    if Library.Toggled then
-        IconLabel.Text = "✕"
-    end
+    if Library.IsMobile then
+        local ToggleButton = Library:AddDraggableButton("Toggle", function()
+            Library:Toggle()
+        end, true)
 
         local LockButton = Library:AddDraggableButton("Lock", function(self)
             Library.CantDragForced = not Library.CantDragForced
