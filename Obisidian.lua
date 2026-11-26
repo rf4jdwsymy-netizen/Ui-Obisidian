@@ -231,12 +231,12 @@ local Library = {
     RotatingChevronTweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
 
     Animations = {
-    ToggleWindow = true,
-    TabSwitch = true,
-    Groupbox = true,
-    Dropdown = true,
-    KeyPicker = true
-},
+        ToggleWindow = true,
+        TabSwitch = true,
+        Groupbox = true,
+        Dropdown = true,
+        KeyPicker = true
+    },
 
     --// States \\--
     Toggled = false,
@@ -276,10 +276,10 @@ local Library = {
     --// Scheme \\--
     IsLightTheme = false,
     Scheme = {
-        BackgroundColor = Color3.fromRGB(15, 15, 15),
-        MainColor = Color3.fromRGB(25, 25, 25),
-        AccentColor = Color3.fromRGB(125, 85, 255),
-        OutlineColor = Color3.fromRGB(40, 40, 40),
+        BackgroundColor = Color3.fromRGB(34, 34, 42),
+        MainColor = Color3.fromRGB(48, 48, 60),
+        AccentColor = Color3.fromRGB(170, 125, 255),
+        OutlineColor = Color3.fromRGB(82, 82, 98),
         FontColor = Color3.new(1, 1, 1),
         Font = Font.fromEnum(Enum.Font.Code),
 
@@ -424,11 +424,11 @@ local Templates = {
 
         --// Animations \\--
         Animations = {
-            ToggleWindow = false,
-            TabSwitch = false,
-            Groupbox = false,
-            Dropdown = false,
-            KeyPicker = false,
+            ToggleWindow = true,
+            TabSwitch = true,
+            Groupbox = true,
+            Dropdown = true,
+            KeyPicker = true,
         },
 
         TabTransitionTime = 0.22,
