@@ -12023,93 +12023,26 @@ function Library:CreateWindow(WindowInfo)
         })
         New("UIListLayout", {
             FillDirection = Enum.FillDirection.Horizontal,
-            HorizontalAlignment = Enum.HorizontalAlignment.Left,
+            HorizontalAlignment = Enum.HorizontalAlignment.Center,
             VerticalAlignment = Enum.VerticalAlignment.Center,
-            Padding = UDim.new(0, 8),
-            Parent = TitleHolder,
-        })
-        New("UIPadding", {
-            PaddingLeft = UDim.new(0, 10),
+            Padding = UDim.new(0, 6),
             Parent = TitleHolder,
         })
 
         if WindowInfo.Icon then
             WindowIcon = Library:CreateIcon(Library:GetCustomIcon(WindowInfo.Icon), {
-                Size = WindowInfo.IconSize or UDim2.fromOffset(28, 28),
+                Size = WindowInfo.IconSize,
                 Parent = TitleHolder,
             })
         else
             WindowIcon = New("TextLabel", {
                 BackgroundTransparency = 1,
-                Size = WindowInfo.IconSize or UDim2.fromOffset(28, 28),
+                Size = WindowInfo.IconSize,
                 Text = WindowInfo.Title:sub(1, 1),
                 TextScaled = true,
                 Visible = false,
                 Parent = TitleHolder,
             })
-        end
-
-        -- 写真スタイル: タイトル + Premium を縦並びで追加
-        local TitleTextHolder = New("Frame", {
-            BackgroundTransparency = 1,
-            Size = UDim2.new(0, 0, 1, 0),
-            AutomaticSize = Enum.AutomaticSize.X,
-            Parent = TitleHolder,
-        })
-        New("UIListLayout", {
-            FillDirection = Enum.FillDirection.Vertical,
-            HorizontalAlignment = Enum.HorizontalAlignment.Left,
-            VerticalAlignment = Enum.VerticalAlignment.Center,
-            Padding = UDim.new(0, 0),
-            Parent = TitleTextHolder,
-        })
-
-        WindowTitle = New("TextLabel", {
-            BackgroundTransparency = 1,
-            AutomaticSize = Enum.AutomaticSize.XY,
-            Text = WindowInfo.Title,
-            TextSize = 17,
-            FontFace = Library.Scheme.Font,
-            TextColor3 = Color3.fromRGB(255, 255, 255),
-            TextXAlignment = Enum.TextXAlignment.Left,
-            TextYAlignment = Enum.TextYAlignment.Center,
-            Parent = TitleTextHolder,
-        })
-
-        -- 写真にある Premium サブタイトルを追加
-        local SubTitle = New("TextLabel", {
-            BackgroundTransparency = 1,
-            AutomaticSize = Enum.AutomaticSize.XY,
-            Text = "Premium",
-            TextSize = 11,
-            FontFace = Library.Scheme.Font,
-            TextColor3 = Color3.fromRGB(170, 170, 180),
-            TextTransparency = 0.15,
-            TextXAlignment = Enum.TextXAlignment.Left,
-            Parent = TitleTextHolder,
-        })
-
-        --// Top Right Bar \\--
-        RightWrapper = New("Frame", {
-            AnchorPoint = Vector2.new(1, 0.5),
-            BackgroundTransparency = 1,
-            Position = UDim2.new(1, -49, 0.5, 0),
-            Size = UDim2.new(1, -InitialLeftWidth - 57 - 1, 1, -16),
-            Parent = TopBar,
-        })
-
-        New("UIListLayout", {
-            FillDirection = Enum.FillDirection.Horizontal,
-            HorizontalAlignment = Enum.HorizontalAlignment.Left,
-            VerticalAlignment = Enum.VerticalAlignment.Center,
-            Padding = UDim.new(0, 8),
-            Parent = RightWrapper,
-        })
-
-        -- 元のグロー付きタイトルは削除（写真はクリーンな白文字のため）
-        -- WindowTitle は上で TitleHolder 内に作成済み
-        RefreshWindowTitleSize = function()
-            -- no-op (タイトルは固定スタイル)
         end
 
         --// Top Right Bar \--
@@ -15856,10 +15789,155 @@ function Library:CreateWindow(WindowInfo)
         end))
     end
 
-    Window:SetAlwaysOnTop(WindowInfo.AlwaysOnTop)
+        Window:SetAlwaysOnTop(WindowInfo.AlwaysOnTop)
     if WindowInfo.EnableCompacting and WindowInfo.SidebarCompacted then
         Window:SetSidebarWidth(WindowInfo.SidebarCompactWidth)
     end
+
+        --// 起動アニメーション（Wera Premium） \\--
+    if WindowInfo.AutoShow and not Library.ActiveLoading then
+        task.spawn(function()
+            -- イントロ用 ScreenGui
+            local IntroGui = New("ScreenGui", {
+                Name = "WeraIntro",
+                DisplayOrder = 9999,
+                IgnoreGuiInset = true,
+                ResetOnSpawn = false,
+            })
+            ParentUI(IntroGui)
+            protectgui(IntroGui)
+
+            -- 暗い背景
+            local Overlay = New("Frame", {
+                BackgroundColor3 = Color3.fromRGB(8, 8, 10),
+                BackgroundTransparency = 1,
+                Size = UDim2.fromScale(1, 1),
+                Parent = IntroGui,
+            })
+
+            -- メインテキストホルダー
+            local TextHolder = New("Frame", {
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                BackgroundTransparency = 1,
+                Position = UDim2.fromScale(0.5, 0.5),
+                Size = UDim2.fromOffset(0, 0),
+                AutomaticSize = Enum.AutomaticSize.XY,
+                Parent = Overlay,
+            })
+
+            -- 「Wera」部分
+            local WeraLabel = New("TextLabel", {
+                BackgroundTransparency = 1,
+                AutomaticSize = Enum.AutomaticSize.XY,
+                Text = "Wera",
+                TextSize = 42,
+                FontFace = Font.fromEnum(Enum.Font.GothamBlack),
+                TextColor3 = Color3.fromRGB(255, 255, 255),
+                TextTransparency = 1,
+                Parent = TextHolder,
+            })
+            -- 白いグロー
+            New("UIStroke", {
+                Color = Color3.fromRGB(255, 255, 255),
+                Thickness = 1.5,
+                Transparency = 0.6,
+                Parent = WeraLabel,
+            })
+            New("UIStroke", {
+                Color = Color3.fromRGB(200, 200, 255),
+                Thickness = 4,
+                Transparency = 0.85,
+                Parent = WeraLabel,
+            })
+
+            -- 「Premium」部分
+            local PremiumLabel = New("TextLabel", {
+                BackgroundTransparency = 1,
+                AutomaticSize = Enum.AutomaticSize.XY,
+                Text = "Premium",
+                TextSize = 22,
+                FontFace = Font.fromEnum(Enum.Font.GothamBold),
+                TextColor3 = Color3.fromRGB(180, 180, 200),
+                TextTransparency = 1,
+                Position = UDim2.fromOffset(0, 48),
+                Parent = TextHolder,
+            })
+
+            -- 下線
+            local Underline = New("Frame", {
+                AnchorPoint = Vector2.new(0.5, 0),
+                BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0.5, 0, 0, 78),
+                Size = UDim2.fromOffset(0, 2),
+                Parent = TextHolder,
+            })
+            table.insert(Library.Corners, New("UICorner", {
+                CornerRadius = UDim.new(1, 0),
+                Parent = Underline,
+            }))
+
+            -- アニメーション開始
+            -- 1. 背景フェードイン
+            TweenService:Create(Overlay, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                BackgroundTransparency = 0.15
+            }):Play()
+
+            task.wait(0.3)
+
+            -- 2. 「Wera」がスケール＋フェードイン
+            WeraLabel.TextTransparency = 1
+            local weraScale = New("UIScale", { Scale = 0.6, Parent = WeraLabel })
+            TweenService:Create(WeraLabel, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+                TextTransparency = 0
+            }):Play()
+            TweenService:Create(weraScale, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+                Scale = 1
+            }):Play()
+
+            task.wait(0.35)
+
+            -- 3. 「Premium」がスライドアップ＋フェードイン
+            PremiumLabel.Position = UDim2.fromOffset(0, 60)
+            TweenService:Create(PremiumLabel, TweenInfo.new(0.55, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                TextTransparency = 0,
+                Position = UDim2.fromOffset(0, 48)
+            }):Play()
+
+            task.wait(0.25)
+
+            -- 4. 下線が左右に伸びる
+            TweenService:Create(Underline, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                BackgroundTransparency = 0.3,
+                Size = UDim2.fromOffset(160, 2)
+            }):Play()
+
+            -- 少し見せる
+            task.wait(1.6)
+
+            -- 5. 全部フェードアウト
+            TweenService:Create(Overlay, TweenInfo.new(0.55, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                BackgroundTransparency = 1
+            }):Play()
+            TweenService:Create(WeraLabel, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                TextTransparency = 1
+            }):Play()
+            TweenService:Create(PremiumLabel, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                TextTransparency = 1
+            }):Play()
+            TweenService:Create(Underline, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                BackgroundTransparency = 1,
+                Size = UDim2.fromOffset(0, 2)
+            }):Play()
+
+            task.wait(0.6)
+
+            -- イントロ終了 → メインUI表示
+            IntroGui:Destroy()
+            Library:Toggle(true)
+        end)
+    end
+    
     if WindowInfo.AutoShow and not Library.ActiveLoading then
         task.spawn(Library.Toggle)
     end
