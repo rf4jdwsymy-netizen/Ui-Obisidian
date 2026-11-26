@@ -2618,6 +2618,45 @@ function Library:AddOutline(Frame: GuiObject)
     return OutlineStroke, ShadowStroke, GlowStroke
 end
 
+--// White glow for text (stacked contextual strokes + slow pulse) \\--
+function Library:AddTextGlow(TextObject: GuiObject, Strength: number?)
+    Strength = Strength or 1
+
+    local Layers = {
+        { Thickness = 1.25, Transparency = 0.15 },
+        { Thickness = 3 * Strength, Transparency = 0.55 },
+        { Thickness = 6 * Strength, Transparency = 0.8 },
+        { Thickness = 10 * Strength, Transparency = 0.92 },
+    }
+
+    local Strokes = {}
+    for _, Layer in Layers do
+        table.insert(Strokes, New("UIStroke", {
+            ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
+            Color = "WhiteColor",
+            LineJoinMode = Enum.LineJoinMode.Round,
+            Thickness = Layer.Thickness,
+            Transparency = Layer.Transparency,
+            Parent = TextObject,
+        }))
+    end
+
+    -- Slow breathing on the outer glow layers
+    for Index = 3, 4 do
+        local Stroke = Strokes[Index]
+        local Base = Layers[Index].Transparency
+        pcall(function()
+            TweenService:Create(
+                Stroke,
+                TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+                { Transparency = math.max(Base - 0.25, 0.4) }
+            ):Play()
+        end)
+    end
+
+    return Strokes
+end
+
 function Library:AddBlank(Frame: GuiObject, Size: UDim2)
     return New("Frame", {
         BackgroundTransparency = 1,
@@ -12124,20 +12163,7 @@ function Library:CreateWindow(WindowInfo)
             LayoutOrder = 0,
             Parent = RightWrapper,
         })
-        New("UIStroke", {
-            Color = Color3.new(1, 1, 1),
-            Thickness = 1.5,
-            Transparency = 0.35,
-            ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
-            Parent = WindowTitle,
-        })
-        New("UIStroke", {
-            Color = Color3.fromRGB(220, 220, 255),
-            Thickness = 3,
-            Transparency = 0.7,
-            ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
-            Parent = WindowTitle,
-        })
+        Library:AddTextGlow(WindowTitle)
 
         RefreshWindowTitleSize = function()
             local MaxWidth = math.max(80, (RightWrapper.AbsoluteSize.X / Library.DPIScale) * 0.35)
@@ -12183,6 +12209,7 @@ function Library:CreateWindow(WindowInfo)
             TextXAlignment = Enum.TextXAlignment.Left,
             Parent = CurrentTabInfo,
         })
+        Library:AddTextGlow(CurrentTabLabel, 0.8)
 
         CurrentTabDescription = New("TextLabel", {
             BackgroundTransparency = 1,
