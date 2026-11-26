@@ -11945,6 +11945,55 @@ function Library:CreateWindow(WindowInfo)
             })
         )
         Library:AddOutline(MainFrame)
+
+        --// White gradient glow around the window (added on top of the original outline) \\--
+        do
+            local White = Color3.new(1, 1, 1)
+
+            local function MakeGlowStroke(Thickness: number, Transparency: number)
+                local Stroke = Instance.new("UIStroke")
+                Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                Stroke.Color = White
+                Stroke.Thickness = Thickness
+                Stroke.Transparency = Transparency
+                Stroke.Parent = MainFrame
+                return Stroke
+            end
+
+            local GlowGradients = {}
+            for _, Stroke in {
+                MakeGlowStroke(1.5, 0),   -- thin bright line
+                MakeGlowStroke(6, 0.75),  -- inner glow
+                MakeGlowStroke(14, 0.9),  -- outer glow
+            } do
+                local Gradient = Instance.new("UIGradient")
+                Gradient.Color = ColorSequence.new({
+                    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+                    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(140, 140, 140)),
+                    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255)),
+                })
+                Gradient.Transparency = NumberSequence.new({
+                    NumberSequenceKeypoint.new(0, 0),
+                    NumberSequenceKeypoint.new(0.5, 0.6),
+                    NumberSequenceKeypoint.new(1, 0),
+                })
+                Gradient.Parent = Stroke
+                table.insert(GlowGradients, Gradient)
+            end
+
+            local GlowAngle = 0
+            Library:GiveSignal(RunService.RenderStepped:Connect(function(DeltaTime)
+                if not (MainFrame and MainFrame.Parent and MainFrame.Visible) then
+                    return
+                end
+
+                GlowAngle = (GlowAngle + DeltaTime * 60) % 360
+                for _, Gradient in GlowGradients do
+                    Gradient.Rotation = GlowAngle
+                end
+            end))
+        end
+
         Library:MakeLine(MainFrame, {
             Position = UDim2.fromOffset(0, 48),
             Size = UDim2.new(1, 0, 0, 1),
