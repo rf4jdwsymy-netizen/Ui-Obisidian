@@ -231,12 +231,12 @@ local Library = {
     RotatingChevronTweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
 
     Animations = {
-        ToggleWindow = true,
-        TabSwitch = true,
-        Groupbox = true,
-        Dropdown = true,
-        KeyPicker = true
-    },
+    ToggleWindow = true,
+    TabSwitch = true,
+    Groupbox = true,
+    Dropdown = true,
+    KeyPicker = true
+},
 
     --// States \\--
     Toggled = false,
@@ -271,17 +271,17 @@ local Library = {
     OriginalMinSize = Vector2.new(480, 360),
     MinSize = Vector2.new(480, 360),
     DPIScale = 1,
-    CornerRadius = 4,
+    CornerRadius = 14,
 
     --// Scheme \\--
     IsLightTheme = false,
     Scheme = {
-        BackgroundColor = Color3.fromRGB(34, 34, 42),
-        MainColor = Color3.fromRGB(48, 48, 60),
-        AccentColor = Color3.fromRGB(170, 125, 255),
-        OutlineColor = Color3.fromRGB(82, 82, 98),
+        BackgroundColor = Color3.fromRGB(18, 14, 28),
+        MainColor = Color3.fromRGB(36, 28, 52),
+        AccentColor = Color3.fromRGB(175, 95, 255),
+        OutlineColor = Color3.fromRGB(120, 70, 210),
         FontColor = Color3.new(1, 1, 1),
-        Font = Font.fromEnum(Enum.Font.Code),
+        Font = Font.fromEnum(Enum.Font.GothamBold),
 
         RedColor = Color3.fromRGB(255, 50, 50),
         DestructiveColor = Color3.fromRGB(220, 38, 38),
@@ -393,11 +393,11 @@ local Templates = {
         SearchbarSize = UDim2.fromScale(1, 1),
         GlobalSearch = false,
 
-        CornerRadius = 4,
+        CornerRadius = 14,
         NotifySide = "Right",
         ShowCustomCursor = true,
 
-        Font = Enum.Font.Code,
+        Font = Enum.Font.GothamBold,
         ToggleKeybind = Enum.KeyCode.RightControl,
 
         ShowMobileButtons = true,
@@ -437,7 +437,7 @@ local Templates = {
         TabButtonsStyle = {
             Gap = 0,
             Padding = 0,
-            CornerRadius = 0,
+            CornerRadius = 10,
             Indicator = false,
             IndicatorWidth = 2,
             IndicatorHeight = 20,
@@ -12704,7 +12704,7 @@ function Library:CreateWindow(WindowInfo)
             if Icon then
                 TabIcon = Library:CreateIcon(Icon, {
                     ImageColor3 = Icon.Custom and "WhiteColor" or "AccentColor",
-                    ImageTransparency = 0.5,
+                    ImageTransparency = 0,
                     LayoutOrder = 1,
                     Size = UDim2.fromOffset(16, 16),
                     Parent = TabButton,
@@ -12778,7 +12778,7 @@ function Library:CreateWindow(WindowInfo)
             if Icon then
                 TabIcon = Library:CreateIcon(Icon, {
                     ImageColor3 = Icon.Custom and "WhiteColor" or "AccentColor",
-                    ImageTransparency = 0.5,
+                    ImageTransparency = 0,
                     Size = UDim2.fromScale(1, 1),
                     SizeConstraint = IsCompact and Enum.SizeConstraint.RelativeXY or Enum.SizeConstraint.RelativeYY,
                     Parent = ButtonHolder,
@@ -14414,7 +14414,7 @@ function Library:CreateWindow(WindowInfo)
             if Icon then
                 TabIcon = Library:CreateIcon(Icon, {
                     ImageColor3 = Icon.Custom and "WhiteColor" or "AccentColor",
-                    ImageTransparency = 0.5,
+                    ImageTransparency = 0,
                     Size = UDim2.fromScale(1, 1),
                     SizeConstraint = IsCompact and Enum.SizeConstraint.RelativeXY or Enum.SizeConstraint.RelativeYY,
                     Parent = ButtonHolder,
@@ -14807,7 +14807,7 @@ function Library:CreateWindow(WindowInfo)
             if Icon then
                 TabIcon = Library:CreateIcon(Icon, {
                     ImageColor3 = Icon.Custom and "WhiteColor" or "AccentColor",
-                    ImageTransparency = 0.5,
+                    ImageTransparency = 0,
                     Size = UDim2.fromScale(1, 1),
                     SizeConstraint = IsCompact and Enum.SizeConstraint.RelativeXY or Enum.SizeConstraint.RelativeYY,
                     Parent = ButtonHolder,
